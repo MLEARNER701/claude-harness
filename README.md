@@ -35,6 +35,24 @@ omission. Treat the receipt as an audit-trail breadcrumb, not proof of quality.
 
 ## Install
 
+### Option A — as a Claude Code plugin (recommended, one-liner)
+
+In Claude Code:
+```
+/plugin marketplace add MLEARNER701/claude-harness
+/plugin install claude-harness@claude-harness
+```
+This wires the hooks, the `senior-code-reviewer` / `qa-verifier` sub-agents, the skills, and the
+`/security-review` command — globally, across every project. **The pre-commit receipt gate is
+git-level and can't ship in a plugin**, so add it per-repo:
+```bash
+git clone https://github.com/MLEARNER701/claude-harness.git
+cd claude-harness
+./install.sh --gate-only /path/to/your/repo   # installs only the pre-commit gate + verifier core
+```
+
+### Option B — copy into one project (full, self-contained)
+
 ```bash
 git clone https://github.com/MLEARNER701/claude-harness.git
 cd claude-harness
@@ -43,14 +61,21 @@ cd claude-harness
 
 Then **restart Claude Code** in your project so it reloads `.claude/settings.json`.
 
-The installer:
-- copies hooks + the verifier core into `<project>/scripts/claude-harness/`
+The installer (Option B):
+- copies hooks + verifier core + the ambiguity gate into `<project>/scripts/claude-harness/`
 - deep-merges the hooks block into `<project>/.claude/settings.json` (dedupes by command)
 - copies `agents/`, `skills/`, `commands/` into `<project>/.claude/`
 - installs the `pre-commit` gate (only if you don't already have one)
-- scaffolds `.harness.json` and `.agent/TASKS.md` if absent
+- seeds `CLAUDE.md` from the template (only if the project has none), `.harness.json`, and `.agent/TASKS.md`
 
 Requirements: **Node ≥ 18** and **git** on PATH. Hooks are plain Node ESM with zero dependencies.
+
+### A starting CLAUDE.md
+
+`CLAUDE.template.md` is a domain-neutral starter for your project's `CLAUDE.md` — it carries the
+engineering discipline this harness assumes (pid≠progress, evidence-first infra changes,
+reuse-before-research, no fabricated data, the verifier loop). Option B seeds it automatically
+when your project has no `CLAUDE.md` yet.
 
 ## Configure
 

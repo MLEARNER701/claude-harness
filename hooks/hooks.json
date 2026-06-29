@@ -1,0 +1,41 @@
+{
+  "PreToolUse": [
+    {
+      "matcher": "Bash",
+      "hooks": [
+        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/hook-guard-destructive.mjs\"", "timeout": 10 }
+      ]
+    },
+    {
+      "matcher": "Edit|Write",
+      "hooks": [
+        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/hook-guard-secrets.mjs\"", "timeout": 10 }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "Edit|Write",
+      "hooks": [
+        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/hook-syntax-check.mjs\"", "timeout": 15 },
+        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/hook-verify-due.mjs\"", "timeout": 10 }
+      ]
+    }
+  ],
+  "SessionStart": [
+    {
+      "matcher": "",
+      "hooks": [
+        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/hook-governing-principles.mjs\"", "timeout": 10 }
+      ]
+    }
+  ],
+  "UserPromptSubmit": [
+    {
+      "matcher": "",
+      "hooks": [
+        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/hook-open-tasks.mjs\"", "timeout": 10 }
+      ]
+    }
+  ]
+}

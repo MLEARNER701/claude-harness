@@ -32,11 +32,15 @@ Do NOT activate for:
 ## The workflow
 
 ### Step 1 — Resolve ambiguity FIRST
-Before writing any spec, decide whether the change is well-specified. If the Goal, the Success
-criterion, the Constraints (which existing rules must be preserved), or the Context (which part
-of the system it touches) is unclear — **ask the user explicit questions** with 2–4 concrete
-options each. Do not autonomously strengthen an underspecified spec unless the user has
-explicitly authorized autonomous mode (and then flag it for review on close).
+Before writing any spec, run the ambiguity gate:
+```bash
+node scripts/claude-harness/dev/architecture-ambiguity-gate.mjs "<change description>"
+```
+It scores the change on Goal / Constraint / Success / Context and exits non-zero (BLOCK) when
+ambiguity > 0.2. (Dependency-free heuristic by default; set `OPENAI_API_KEY` for a sharper LLM
+judge.) On BLOCK, **ask the user explicit questions** about the missing dimensions — 2–4 concrete
+options each — then re-run. Do not autonomously strengthen an underspecified spec unless the user
+has explicitly authorized autonomous mode (and then flag it for review on close).
 
 ### Step 2 — specify
 Create `.specify/specs/<kebab-name>.md`:

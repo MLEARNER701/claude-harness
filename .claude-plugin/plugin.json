@@ -1,0 +1,12 @@
+{
+  "name": "claude-harness",
+  "description": "Verifier-in-the-loop harness: lifecycle guard/reminder hooks, a senior-code-reviewer sub-agent, and a verifier-receipt commit gate.",
+  "version": "0.1.0",
+  "author": { "name": "MLEARNER701" },
+  "homepage": "https://github.com/MLEARNER701/claude-harness",
+  "license": "MIT",
+  "hooks": "./hooks/hooks.json",
+  "commands": "./commands",
+  "agents": "./agents",
+  "skills": "./skills"
+}

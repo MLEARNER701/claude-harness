@@ -1,0 +1,14 @@
+{
+  "name": "claude-harness",
+  "owner": { "name": "MLEARNER701" },
+  "description": "Verifier-in-the-loop harness for Claude Code — guard/reminder hooks, senior-code-reviewer sub-agent, and a pre-commit receipt gate.",
+  "plugins": [
+    {
+      "name": "claude-harness",
+      "source": "./",
+      "description": "Lifecycle hooks (destructive-command + secret guards, syntax check, verify-due), a senior-code-reviewer sub-agent, dev-loop / spec-driven / verifier-review-loop skills, and a /security-review command. Pair with the pre-commit receipt gate (see repo README).",
+      "category": "workflow",
+      "tags": ["hooks", "code-review", "verifier", "pre-commit", "guardrails"]
+    }
+  ]
+}
