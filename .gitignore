@@ -1,0 +1,13 @@
+# claude-harness runtime + local artifacts
+runtime/verifier/
+runtime/responses/
+node_modules/
+.DS_Store
+*.log
+
+# never commit a real harness config or secrets
+.harness.json
+.env
+.env.*
+!.env.example
+!.harness.example.json

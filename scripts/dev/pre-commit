@@ -1,0 +1,51 @@
+#!/bin/sh
+# Claude-harness pre-commit GREEN GATE.
+#
+# Runs the fast inner verifier (scripts/dev/verify-fast.mjs): node --check on every
+# changed *.js/*.mjs + scoped unit/contract tests (env-dependent integration +
+# build artifacts are excluded — see verify-fast). Exit non-zero BLOCKS the commit.
+#
+# This is the "verifier in the loop" made physical: red can't be committed by
+# accident. The outer `npm test` + ambiguity gate remain the full pre-merge gate.
+#
+# After verify-fast, a second gate checks
+# that any staged live src/** has a fresh verifier receipt. FLAG-GATED, default
+# warn-only via HARNESS_VERIFIER_GATE (warn|block|0). See below.
+#
+# BYPASS (intentional WIP / known-unrelated red): git commit --no-verify
+#
+# Install: scripts/dev/install-git-hooks.sh (copies this into .git/hooks/).
+# Disable for one session: export HARNESS_PRECOMMIT=0
+
+if [ "${HARNESS_PRECOMMIT:-1}" = "0" ]; then
+  exit 0
+fi
+
+# Prefer the homebrew node (correct better-sqlite3 ABI on this host); fall back to PATH.
+NODE_BIN=/opt/homebrew/bin/node
+[ -x "$NODE_BIN" ] || NODE_BIN=node
+
+"$NODE_BIN" scripts/dev/verify-fast.mjs
+status=$?
+if [ $status -ne 0 ]; then
+  echo ""
+  echo "✗ pre-commit blocked: verify-fast failed (fix, or bypass with: git commit --no-verify)"
+  exit $status
+fi
+
+# ── verifier-receipt gate ───────────────────────────────────
+# If the staged set includes live src/** AND no fresh verifier receipt exists, block
+# (or warn). FLAG-GATED, DEFAULT BLOCK (default — enforce the loop:
+# a senior-code-reviewer must have run + written a receipt before src is committed).
+#   HARNESS_VERIFIER_GATE=block  (DEFAULT) → block the commit when no fresh receipt
+#   HARNESS_VERIFIER_GATE=warn             → print reminder, exit 0 (never blocks)
+#   HARNESS_VERIFIER_GATE=0|off            → skip the gate entirely
+# Bypass either mode for one commit: git commit --no-verify
+"$NODE_BIN" scripts/dev/verifier-receipt.mjs check
+vstatus=$?
+if [ $vstatus -ne 0 ]; then
+  echo ""
+  echo "✗ pre-commit blocked: no fresh verifier receipt (bypass: git commit --no-verify, or HARNESS_VERIFIER_GATE=0)"
+fi
+
+exit $vstatus

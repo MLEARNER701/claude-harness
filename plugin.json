@@ -1,0 +1,20 @@
+{
+  "name": "claude-harness",
+  "version": "0.1.0",
+  "description": "A verifier-in-the-loop harness for Claude Code: lifecycle hooks, a senior-code-reviewer sub-agent, and a pre-commit receipt gate that makes skipping code review an explicit act.",
+  "author": "MLEARNER701",
+  "license": "MIT",
+  "hooks": "./settings.template.json",
+  "agents": [
+    "./agents/senior-code-reviewer.md",
+    "./agents/qa-verifier.md"
+  ],
+  "commands": [
+    "./commands/security-review.md"
+  ],
+  "skills": [
+    "./skills/dev-loop/SKILL.md",
+    "./skills/spec-driven/SKILL.md",
+    "./skills/verifier-review-loop/SKILL.md"
+  ]
+}

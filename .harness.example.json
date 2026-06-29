@@ -1,0 +1,4 @@
+{
+  "test_cmd": "npm test",
+  "_comment": "Optional config for the claude-harness. test_cmd is the outer gate the dev-loop runs before commit. verify-fast auto-detects changed .js/.mjs and runs node --check + scoped node:test; it does not require this file."
+}
